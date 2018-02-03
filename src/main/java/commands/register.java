@@ -4,7 +4,9 @@ import core.Main;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import util.SECRETS;
-
+import static core.Main.pst;
+import static core.Main.rs;
+import static core.Main.con;
 import java.awt.*;
 import java.sql.*;
 
@@ -29,9 +31,9 @@ public class register implements Command {
                 case "list":
 
                     try {
-                        Connection con = DriverManager.getConnection(urlempty + "bank" + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", Main.user, Main.password);
-                        PreparedStatement pst = con.prepareStatement("SELECT * FROM `list`");
-                        ResultSet rs = pst.executeQuery();
+                        con = DriverManager.getConnection(urlempty + "bank" + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", Main.user, Main.password);
+                        pst = con.prepareStatement("SELECT * FROM `list`");
+                        rs = pst.executeQuery();
 
                         String out = "";
 
@@ -39,7 +41,6 @@ public class register implements Command {
                             out += "●► ``" + rs.getString(6) + "``\n";
                         }
                         event.getChannel().sendMessage(new EmbedBuilder().setFooter(Main.Footer, Main.Footer2).setColor(Color.GREEN)
-
                                 .setDescription("Hier eine Liste aller Bots bei denen du dich registrieren kannst: \n" + out)
                                 .setTitle("Liste")
                                 .build()
@@ -54,9 +55,9 @@ public class register implements Command {
                 if (args[0].toLowerCase().equals("list")) {
 
                 } else {
-                    Connection con = DriverManager.getConnection(urlempty + "bank" + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", Main.user, Main.password);
-                    PreparedStatement pst = con.prepareStatement("SELECT * FROM `list` WHERE `NameRichtig` LIKE '" + args[0] + "'");
-                    ResultSet rs = pst.executeQuery();
+                    con = DriverManager.getConnection(urlempty + "bank" + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", Main.user, Main.password);
+                    pst = con.prepareStatement("SELECT * FROM `list` WHERE `NameRichtig` LIKE '" + args[0] + "'");
+                    rs = pst.executeQuery();
                     if (!rs.next()) {
                         event.getChannel().sendMessage(new EmbedBuilder().setFooter(Main.Footer, Main.Footer2).setColor(Color.RED).setTitle("Fehler!").setDescription("Huups: du hast etwas falsch eingegeben oder den" +
                                 " Bot gibt es nicht!").build()).queue();

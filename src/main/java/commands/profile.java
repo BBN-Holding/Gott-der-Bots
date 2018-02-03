@@ -13,8 +13,9 @@ import java.sql.*;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
+import static core.Main.pst;
+import static core.Main.rs;
+import static core.Main.con;
 
 import static core.Main.urlempty;
 import static util.SECRETS.VERSION;
@@ -72,23 +73,23 @@ public class profile implements Command {
             }
             try {
                 //Cookies
-                Connection con = DriverManager.getConnection(urlempty + "cookiebot" + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", Main.user, Main.password);
-                PreparedStatement pst = con.prepareStatement("SELECT * FROM `user` WHERE ID='"+event.getAuthor().getId()+"'");
-                ResultSet rs = pst.executeQuery();
-                if (!rs.next()) {
+                Main.con = DriverManager.getConnection(urlempty + "cookiebot" + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", Main.user, Main.password);
+                Main.pst = Main.con.prepareStatement("SELECT * FROM `user` WHERE ID='"+user.getUser().getId()+"'");
+                Main.rs = Main.pst.executeQuery();
+                if (!Main.rs.next()) {
                     Cookies= "Da musst du dich wohl mit -register noch bei dem Bot registrieren!";
                     Cpc="Da musst du dich wohl mit -register noch bei dem Bot registrieren!";
                 } else {
-                    Cookies=rs.getInt(2)+"";
-                    Cpc=rs.getInt(3)+"";
+                    Cookies=Main.rs.getInt(2)+"";
+                    Cpc=Main.rs.getInt(3)+"";
                 }
             } catch (SQLException e) {}
             //Level//Punkte//Progress
         try {
-            Connection con = DriverManager.getConnection(urlempty + "lvl" + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", Main.user, Main.password);
-            PreparedStatement pst = con.prepareStatement("SELECT * FROM `user` WHERE ID='"+event.getAuthor().getId()+"'");
-            ResultSet rs = pst.executeQuery();
-            if (!rs.next()) {
+            Main.con = DriverManager.getConnection(urlempty + "lvl" + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", Main.user, Main.password);
+            Main.pst = Main.con.prepareStatement("SELECT * FROM `user` WHERE ID='"+event.getAuthor().getId()+"'");
+            Main.rs = Main.pst.executeQuery();
+            if (!Main.rs.next()) {
                 Punkte="Da musst du dich wohl mit -register noch bei dem Bot registrieren!";
                Level= "Da musst du dich wohl mit -register noch bei dem Bot registrieren!";
                LevelPlus= "Da musst du dich wohl mit -register noch bei dem Bot registrieren!";
@@ -98,9 +99,9 @@ public class profile implements Command {
                 Punkte=rs.getInt(2)+"";
                 Level=rs.getInt(3)+"";
                 TempProgress=rs.getInt(3)+1;
-                con = DriverManager.getConnection(urlempty + "lvl" + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", Main.user, Main.password);
-                pst = con.prepareStatement("SELECT * FROM `lvl` WHERE lvl='"+TempProgress+"'");
-                rs = pst.executeQuery();
+                Main.con = DriverManager.getConnection(urlempty + "lvl" + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", Main.user, Main.password);
+                Main.pst = Main.con.prepareStatement("SELECT * FROM `lvl` WHERE lvl='"+TempProgress+"'");
+                Main.rs = Main.pst.executeQuery();
                 if (!rs.next()) {
                     System.out.println("DESFASFD");
                 }
@@ -114,33 +115,33 @@ public class profile implements Command {
                     System.out.println(viertel);
                     if (viertel>Integer.parseInt(Punkte)) {
                         System.out.println("DEBUG 1");
-                        Progress=event.getGuild().getEmotesByName("progbar_start_empty",true).get(0).getAsMention()+" " +
-                                event.getGuild().getEmotesByName("progbar_mid_empty",true).get(0).getAsMention()+" "+
-                                event.getGuild().getEmotesByName("progbar_mid_empty",true).get(0).getAsMention()+" "+
+                        Progress=event.getGuild().getEmotesByName("progbar_start_empty",true).get(0).getAsMention()+"" +
+                                event.getGuild().getEmotesByName("progbar_mid_empty",true).get(0).getAsMention()+""+
+                                event.getGuild().getEmotesByName("progbar_mid_empty",true).get(0).getAsMention()+""+
                                 event.getGuild().getEmotesByName("progbar_end_empty",true).get(0).getAsMention();
                     } else if (((viertel*2)>Integer.parseInt(Punkte))&&(viertel<=Integer.parseInt(Punkte))) {
                         System.out.println("DEBUG 2");
-                        Progress=event.getGuild().getEmotesByName("progbar_start_full",true).get(0).getAsMention()+" " +
-                                event.getGuild().getEmotesByName("progbar_mid_empty",true).get(0).getAsMention()+" "+
-                                event.getGuild().getEmotesByName("progbar_mid_empty",true).get(0).getAsMention()+" "+
+                        Progress=event.getGuild().getEmotesByName("progbar_start_full",true).get(0).getAsMention()+"" +
+                                event.getGuild().getEmotesByName("progbar_mid_empty",true).get(0).getAsMention()+""+
+                                event.getGuild().getEmotesByName("progbar_mid_empty",true).get(0).getAsMention()+""+
                                 event.getGuild().getEmotesByName("progbar_end_empty",true).get(0).getAsMention();
                     } else if (((viertel*3)>Integer.parseInt(Punkte))&&((viertel*2)<=Integer.parseInt(Punkte))) {
                         System.out.println("DEBUG 3");
-                        Progress=event.getGuild().getEmotesByName("progbar_start_full",true).get(0).getAsMention()+" " +
-                                event.getGuild().getEmotesByName("progbar_mid_full",true).get(0).getAsMention()+" "+
-                                event.getGuild().getEmotesByName("progbar_mid_empty",true).get(0).getAsMention()+" "+
+                        Progress=event.getGuild().getEmotesByName("progbar_start_full",true).get(0).getAsMention()+"" +
+                                event.getGuild().getEmotesByName("progbar_mid_full",true).get(0).getAsMention()+
+                                event.getGuild().getEmotesByName("progbar_mid_empty",true).get(0).getAsMention()+""+
                                 event.getGuild().getEmotesByName("progbar_end_empty",true).get(0).getAsMention();
                     } else if (((viertel*4)>Integer.parseInt(Punkte))&&((viertel*3)<=Integer.parseInt(Punkte))) {
                         System.out.println("DEBUG 4");
                         Progress=event.getGuild().getEmotesByName("progbar_start_full",true).get(0).getAsMention()+
-                                event.getGuild().getEmotesByName("progbar_mid_full",true).get(0).getAsMention()+" "+
-                                event.getGuild().getEmotesByName("progbar_mid_full",true).get(0).getAsMention()+" "+
+                                event.getGuild().getEmotesByName("progbar_mid_full",true).get(0).getAsMention()+""+
+                                event.getGuild().getEmotesByName("progbar_mid_full",true).get(0).getAsMention()+""+
                                 event.getGuild().getEmotesByName("progbar_end_empty",true).get(0).getAsMention();
                     } else if (rs.getInt(2)<Integer.parseInt(Punkte)) {
                         System.out.println("DEBUG 5");
-                        Progress=event.getGuild().getEmotesByName("progbar_start_full",true).get(0).getAsMention()+" " +
-                                event.getGuild().getEmotesByName("progbar_mid_full",true).get(0).getAsMention()+" "+
-                                event.getGuild().getEmotesByName("progbar_mid_full",true).get(0).getAsMention()+" "+
+                        Progress=event.getGuild().getEmotesByName("progbar_start_full",true).get(0).getAsMention()+"" +
+                                event.getGuild().getEmotesByName("progbar_mid_full",true).get(0).getAsMention()+""+
+                                event.getGuild().getEmotesByName("progbar_mid_full",true).get(0).getAsMention()+""+
                                 event.getGuild().getEmotesByName("progbar_end_full",true).get(0).getAsMention();
                     }
                 }

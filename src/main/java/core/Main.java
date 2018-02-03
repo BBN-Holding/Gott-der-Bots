@@ -10,6 +10,9 @@ import util.SECRETS;
 
 import javax.security.auth.login.LoginException;
 import java.awt.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import static util.SECRETS.VERSION;
 
@@ -23,8 +26,14 @@ public class Main {
     public static JDABuilder builder;
     public static String Footer = "© Gott der Bots v." + VERSION;
     public static String Footer2 = "http://www.baggerstation.de/testseite/bots/Gott.png";
+    public static Connection con;
+    public static PreparedStatement pst;
+    public static ResultSet rs;
 
     public static void main(String[] Args) {
+        Connection con;
+        PreparedStatement pst;
+        ResultSet rs;
         builder = new JDABuilder(AccountType.BOT).setToken(SECRETS.Token).setAutoReconnect(true).setStatus(OnlineStatus.ONLINE);
         builder.addEventListener(new commandListener());
         builder.addEventListener(new Message());
@@ -35,6 +44,7 @@ public class Main {
         commandHandler.commands.put("bots", new bots());
         commandHandler.commands.put("register", new register());
         commandHandler.commands.put("profile", new profile());
+        commandHandler.commands.put("broadcast", new broadcast());
 
         GameAnimator.start();
 

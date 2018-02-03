@@ -4,7 +4,9 @@ import core.Main;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import util.SECRETS;
-
+import static core.Main.pst;
+import static core.Main.rs;
+import static core.Main.con;
 import java.awt.*;
 import java.sql.*;
 
@@ -37,9 +39,9 @@ public class bank implements Command{
                 case "change":
                     try {
 
-                        Connection con = DriverManager.getConnection(urlempty + "bank?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", Main.user, Main.password);
-                        PreparedStatement pst = con.prepareStatement("SELECT * FROM `list` WHERE `Name` LIKE '" + args[1] + "'");
-                        ResultSet rs = pst.executeQuery();
+                        con = DriverManager.getConnection(urlempty + "bank?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", Main.user, Main.password);
+                        pst = con.prepareStatement("SELECT * FROM `list` WHERE `Name` LIKE '" + args[1] + "'");
+                        rs = pst.executeQuery();
                         if (!rs.next()) {
                             event.getTextChannel().sendMessage(
                                     new EmbedBuilder().setFooter(Main.Footer, Main.Footer2).setTitle("Fehler").setThumbnail("").setDescription("Huups: du hast etwas falsch eingegeben oder diese Währung gibt es nicht!").build()

@@ -6,7 +6,9 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.sql.*;
 import static core.Main.urlempty;
-import static util.SECRETS.VERSION;
+import static core.Main.pst;
+import static core.Main.rs;
+import static core.Main.con;
 
 public class bots implements Command {
     @Override
@@ -17,9 +19,9 @@ public class bots implements Command {
     @Override
     public void action(String[] args, MessageReceivedEvent event) {
         try {
-        Connection con = DriverManager.getConnection(urlempty+"bank" + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", Main.user, Main.password);
-        PreparedStatement pst = con.prepareStatement("SELECT * FROM `list`");
-        ResultSet rs = pst.executeQuery();
+        Main.con = DriverManager.getConnection(urlempty+"bank" + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", Main.user, Main.password);
+        Main.pst = Main.con.prepareStatement("SELECT * FROM `list`");
+        Main.rs = Main.pst.executeQuery();
 
         String out = "";
 

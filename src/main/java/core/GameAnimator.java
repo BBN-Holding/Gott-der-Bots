@@ -5,6 +5,9 @@ import util.SECRETS;
 
 import java.sql.*;
 
+import static core.Main.pst;
+import static core.Main.rs;
+import static core.Main.con;
 import static core.Main.urlempty;
 import static util.SECRETS.PREFIX;
 import static util.SECRETS.VERSION;
@@ -24,9 +27,9 @@ public class GameAnimator {
     public static synchronized void start() {
         try {
             if (!running) {
-                    Connection con = DriverManager.getConnection(urlempty + "temp?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", Main.user, Main.password);
-                    PreparedStatement pst = con.prepareStatement("SELECT * FROM `tempt` WHERE `Temp1` LIKE 'Game'");
-                    ResultSet rs = pst.executeQuery();
+                    con = DriverManager.getConnection(urlempty + "temp?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", Main.user, Main.password);
+                    pst = con.prepareStatement("SELECT * FROM `tempt` WHERE `Temp1` LIKE 'Game'");
+                    rs = pst.executeQuery();
                     while (rs.next()) {
                         currentGame=rs.getInt(2);
                     }
@@ -65,8 +68,8 @@ public class GameAnimator {
 
     }
     private static void sync()throws SQLException {
-        Connection con = DriverManager.getConnection(urlempty + "temp?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", Main.user, Main.password);
-        PreparedStatement pst = con.prepareStatement("UPDATE `tempt` SET `Temp2`='" + currentGame + "' WHERE `Temp1`='Game' ");
+        Main.con = DriverManager.getConnection(urlempty + "temp?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", Main.user, Main.password);
+        pst = Main.con.prepareStatement("UPDATE `tempt` SET `Temp2`='" + currentGame + "' WHERE `Temp1`='Game' ");
         pst.execute();
     }
 }
