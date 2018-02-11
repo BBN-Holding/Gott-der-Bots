@@ -19,13 +19,13 @@ import static util.SECRETS.VERSION;
 public class Main {
 
     public static int Timer=0;
-    public static String user="krank";
-    public static String password="krank";
-    public static String urlempty="jdbc:mysql://localhost/";
+    public static String user="SQL_username";
+    public static String password="SQL_password";
+    public static String urlempty="SQL_url";
 
     public static JDABuilder builder;
-    public static String Footer = "© Gott der Bots v." + VERSION;
-    public static String Footer2 = "http://www.baggerstation.de/testseite/bots/Gott.png";
+    public static String Footer = "© Gott Bot v." + VERSION;
+    public static String Footer2 = "http://bigbotnetwork.de/logo.png";
     public static Connection con;
     public static PreparedStatement pst;
     public static ResultSet rs;
