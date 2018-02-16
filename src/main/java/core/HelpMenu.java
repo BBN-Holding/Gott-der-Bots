@@ -20,8 +20,9 @@ public class HelpMenu {
             Emoji[1]="\uD83D\uDD19";
             Title = "Help zum GottderBots";
             Message="``-help`` - macht das Help Menü auf\n" +
-                    "``-bank`` - Wandelt eine Bot währung in Bytes um [Team]\n" +
                     "``-bots`` - Listet alle Bots auf\n" +
+                    "``-miner`` - zeigt dir deine Miner stats\n"+
+                    "``-profile`` - zeigt dir dein Profil\n"+
                     "``-register`` - Registriert dich bei einem Bot";
         }
         if (id.equals("\uD83D\uDD19")) {
