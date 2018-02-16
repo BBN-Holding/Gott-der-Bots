@@ -32,11 +32,11 @@ public class help implements Command {
                 event.getTextChannel().sendMessage(new EmbedBuilder().setFooter(Main.Footer, Main.Footer2).setTitle("Gesendet!").setDescription("Dir wurde das Help Menü geschickt!").setColor(Color.GREEN).build()).complete()
                         .delete().queueAfter(5, TimeUnit.SECONDS);
                 HelpMenu.Help("\uD83D\uDD19");
-            String id=event.getMember().getUser().openPrivateChannel().complete().sendMessage(new EmbedBuilder().setColor(Color.GREEN).setTitle(HelpMenu.Title).setDescription(HelpMenu.Message).build()).complete().getId();
-            System.out.println(id);
+            long Message= event.getMember().getUser().openPrivateChannel().complete().sendMessage(new EmbedBuilder().setColor(Color.GREEN).setTitle(HelpMenu.Title).setDescription(HelpMenu.Message).build()).complete().getIdLong();
+            System.out.println(Message);
             int i=1;
             while (HelpMenu.Emoji.length>i) {
-                event.getAuthor().openPrivateChannel().complete().addReactionById(id, HelpMenu.Emoji[i]).queue();
+                event.getAuthor().openPrivateChannel().complete().addReactionById(Message, HelpMenu.Emoji[i]).queue();
                 HelpMenu.Emoji[i]=null;
                 i++;
             }

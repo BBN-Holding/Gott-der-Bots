@@ -2,20 +2,15 @@ package commands;
 
 import core.Main;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Emote;
 import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import javax.sound.sampled.LineEvent;
 import java.awt.*;
 import java.sql.*;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-import static core.Main.pst;
-import static core.Main.rs;
-import static core.Main.con;
 
 import static core.Main.urlempty;
 import static util.SECRETS.VERSION;
@@ -26,16 +21,8 @@ public class profile implements Command {
     Member user;
     String useruser;
     String Cookies;
-    String Cpc;
     String Punkte;
     String Level;
-    String Progress;
-    String ProgressMax;
-    int TempProgress;
-    String TempPuntke;
-    String TempPunkte2;
-    int viertel;
-    String LevelPlus;
     @Override
     public boolean called(String[] args, MessageReceivedEvent event) {
         return false;
@@ -60,110 +47,52 @@ public class profile implements Command {
         if (user.getNickname() == null) Nick = "Es gibt keinen Nicknamen";
             else Nick = user.getNickname();
             int i=0;
-            String out="";
+            String Rollen="";
             int end = user.getRoles().size()-1;
             while (i<user.getRoles().size()) {
                 if (i<end) {
-                    out += user.getRoles().get(i).getName() + ", ";
+                    Rollen += user.getRoles().get(i).getName() + ", ";
                     i++;
                 } else {
-                    out += user.getRoles().get(i).getName();
+                    Rollen += user.getRoles().get(i).getName();
                     i++;
                 }
             }
             try {
                 //Cookies
-                Main.con = DriverManager.getConnection(urlempty + "cookiebot" + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", Main.user, Main.password);
-                Main.pst = Main.con.prepareStatement("SELECT * FROM `user` WHERE ID='"+user.getUser().getId()+"'");
-                Main.rs = Main.pst.executeQuery();
-                if (!Main.rs.next()) {
+                Connection con = DriverManager.getConnection(urlempty + "cookiebot" + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", Main.user, Main.password);
+                PreparedStatement pst = con.prepareStatement("SELECT * FROM `user` WHERE ID='"+event.getAuthor().getId()+"'");
+                ResultSet rs = pst.executeQuery();
+                if (!rs.next()) {
                     Cookies= "Da musst du dich wohl mit -register noch bei dem Bot registrieren!";
-                    Cpc="Da musst du dich wohl mit -register noch bei dem Bot registrieren!";
                 } else {
-                    Cookies=Main.rs.getInt(2)+"";
-                    Cpc=Main.rs.getInt(3)+"";
+                    Cookies=rs.getInt(2)+"";
                 }
             } catch (SQLException e) {}
-            //Level//Punkte//Progress
+            //Level
         try {
-            Main.con = DriverManager.getConnection(urlempty + "lvl" + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", Main.user, Main.password);
-            Main.pst = Main.con.prepareStatement("SELECT * FROM `user` WHERE ID='"+event.getAuthor().getId()+"'");
-            Main.rs = Main.pst.executeQuery();
-            if (!Main.rs.next()) {
+            Connection con = DriverManager.getConnection(urlempty + "lvl" + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", Main.user, Main.password);
+            PreparedStatement pst = con.prepareStatement("SELECT * FROM `user` WHERE ID='"+event.getAuthor().getId()+"'");
+            ResultSet rs = pst.executeQuery();
+            if (!rs.next()) {
                 Punkte="Da musst du dich wohl mit -register noch bei dem Bot registrieren!";
                Level= "Da musst du dich wohl mit -register noch bei dem Bot registrieren!";
-               LevelPlus= "Da musst du dich wohl mit -register noch bei dem Bot registrieren!";
-               Progress="Da musst du dich wohl mit -register noch bei dem Bot registrieren!";
-                ProgressMax="Da musst du dich wohl mit -register noch bei dem Bot registrieren!";
             } else {
                 Punkte=rs.getInt(2)+"";
                 Level=rs.getInt(3)+"";
-                TempProgress=rs.getInt(3)+1;
-                Main.con = DriverManager.getConnection(urlempty + "lvl" + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", Main.user, Main.password);
-                Main.pst = Main.con.prepareStatement("SELECT * FROM `lvl` WHERE lvl='"+TempProgress+"'");
-                Main.rs = Main.pst.executeQuery();
-                if (!rs.next()) {
-                    System.out.println("DESFASFD");
-                }
-                else {
-                    System.out.println("DEBUUUG");
-                    viertel=rs.getInt(2)/4;
-                    ProgressMax=rs.getInt(2)+"";
-                    LevelPlus=(Integer.parseInt(Level)+1)+"";
-                    //unter 25% viertel=2
-                    System.out.println(Punkte);
-                    System.out.println(viertel);
-                    if (viertel>Integer.parseInt(Punkte)) {
-                        System.out.println("DEBUG 1");
-                        Progress=event.getGuild().getEmotesByName("progbar_start_empty",true).get(0).getAsMention()+"" +
-                                event.getGuild().getEmotesByName("progbar_mid_empty",true).get(0).getAsMention()+""+
-                                event.getGuild().getEmotesByName("progbar_mid_empty",true).get(0).getAsMention()+""+
-                                event.getGuild().getEmotesByName("progbar_end_empty",true).get(0).getAsMention();
-                    } else if (((viertel*2)>Integer.parseInt(Punkte))&&(viertel<=Integer.parseInt(Punkte))) {
-                        System.out.println("DEBUG 2");
-                        Progress=event.getGuild().getEmotesByName("progbar_start_full",true).get(0).getAsMention()+"" +
-                                event.getGuild().getEmotesByName("progbar_mid_empty",true).get(0).getAsMention()+""+
-                                event.getGuild().getEmotesByName("progbar_mid_empty",true).get(0).getAsMention()+""+
-                                event.getGuild().getEmotesByName("progbar_end_empty",true).get(0).getAsMention();
-                    } else if (((viertel*3)>Integer.parseInt(Punkte))&&((viertel*2)<=Integer.parseInt(Punkte))) {
-                        System.out.println("DEBUG 3");
-                        Progress=event.getGuild().getEmotesByName("progbar_start_full",true).get(0).getAsMention()+"" +
-                                event.getGuild().getEmotesByName("progbar_mid_full",true).get(0).getAsMention()+
-                                event.getGuild().getEmotesByName("progbar_mid_empty",true).get(0).getAsMention()+""+
-                                event.getGuild().getEmotesByName("progbar_end_empty",true).get(0).getAsMention();
-                    } else if (((viertel*4)>Integer.parseInt(Punkte))&&((viertel*3)<=Integer.parseInt(Punkte))) {
-                        System.out.println("DEBUG 4");
-                        Progress=event.getGuild().getEmotesByName("progbar_start_full",true).get(0).getAsMention()+
-                                event.getGuild().getEmotesByName("progbar_mid_full",true).get(0).getAsMention()+""+
-                                event.getGuild().getEmotesByName("progbar_mid_full",true).get(0).getAsMention()+""+
-                                event.getGuild().getEmotesByName("progbar_end_empty",true).get(0).getAsMention();
-                    } else if (rs.getInt(2)<Integer.parseInt(Punkte)) {
-                        System.out.println("DEBUG 5");
-                        Progress=event.getGuild().getEmotesByName("progbar_start_full",true).get(0).getAsMention()+"" +
-                                event.getGuild().getEmotesByName("progbar_mid_full",true).get(0).getAsMention()+""+
-                                event.getGuild().getEmotesByName("progbar_mid_full",true).get(0).getAsMention()+""+
-                                event.getGuild().getEmotesByName("progbar_end_full",true).get(0).getAsMention();
-                    }
-                }
             }
         } catch (SQLException e) {}
-        event.getMessage().delete().queue();
-        event.getTextChannel().sendMessage(new EmbedBuilder().setFooter(Main.Footer, Main.Footer2).setColor(Color.GREEN).setTitle("Profile").setDescription("" +
-                "__**User Statistiken**__:\n"+
-                "\n**Name**: ***" + user.getUser().getName() + "***\n" +
-                "**Nick**: ***" + Nick + "***\n" +
-                "**Game**: ***" + Game + "***\n" +
-                "**Rollen**: ***" + out + "***\n" +
-                "**Server betreten**: ***"+ user.getJoinDate().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT).withZone(ZoneId.of("GMT")))+"***\n" +
-                "**Status**: ***" + user.getOnlineStatus()+"***\n" +
-                "\n__**Netzwerk Statistiken**__:\n"+
-                "**Cookies**: ***" + Cookies + "***\n"+
-                "**Cookies pro Nachricht**: ***" + Cpc + "***\n\n"+
-                "**Level**: ***" + Level + "***\n" +
-                "**Punkte**: ***" + Punkte + "***\n" +
-                "**Zu Level " +LevelPlus +"**: ***" +ProgressMax + " Punkte***\n" +
-                "**Fortschritt**: ***"+ Progress + "***\n")
-                .setThumbnail(user.getUser().getAvatarUrl()).build()).queue();
+
+        EmbedBuilder eb = new EmbedBuilder().setFooter(Main.Footer, Main.Footer2).setColor(Color.GREEN).setTitle("Your Profile");
+            eb.addField("Name", user.getUser().getName(), true);
+            eb.addField("Nickname", Nick, true);
+            eb.addField("Game", Game, true);
+            eb.addField("Rollen", Rollen, true);
+            eb.addField("Server betreten", user.getJoinDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm:ss")), true);
+            eb.addField("Status", user.getOnlineStatus().toString(), true);
+
+            eb.setThumbnail(user.getUser().getAvatarUrl());
+        event.getTextChannel().sendMessage(eb.build()).queue();
 
     }
 

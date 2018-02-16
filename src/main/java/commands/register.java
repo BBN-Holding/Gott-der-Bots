@@ -4,9 +4,7 @@ import core.Main;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import util.SECRETS;
-import static core.Main.pst;
-import static core.Main.rs;
-import static core.Main.con;
+
 import java.awt.*;
 import java.sql.*;
 
@@ -31,9 +29,9 @@ public class register implements Command {
                 case "list":
 
                     try {
-                        con = DriverManager.getConnection(urlempty + "bank" + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", Main.user, Main.password);
-                        pst = con.prepareStatement("SELECT * FROM `list`");
-                        rs = pst.executeQuery();
+                        Connection con = DriverManager.getConnection(urlempty + "bank" + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", Main.user, Main.password);
+                        PreparedStatement pst = con.prepareStatement("SELECT * FROM `list`");
+                        ResultSet rs = pst.executeQuery();
 
                         String out = "";
 
@@ -55,9 +53,9 @@ public class register implements Command {
                 if (args[0].toLowerCase().equals("list")) {
 
                 } else {
-                    con = DriverManager.getConnection(urlempty + "bank" + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", Main.user, Main.password);
-                    pst = con.prepareStatement("SELECT * FROM `list` WHERE `NameRichtig` LIKE '" + args[0] + "'");
-                    rs = pst.executeQuery();
+                    Connection con = DriverManager.getConnection(urlempty + "bank" + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", Main.user, Main.password);
+                    PreparedStatement pst = con.prepareStatement("SELECT * FROM `list` WHERE `NameRichtig` LIKE '" + args[0] + "'");
+                    ResultSet rs = pst.executeQuery();
                     if (!rs.next()) {
                         event.getChannel().sendMessage(new EmbedBuilder().setFooter(Main.Footer, Main.Footer2).setColor(Color.RED).setTitle("Fehler!").setDescription("Huups: du hast etwas falsch eingegeben oder den" +
                                 " Bot gibt es nicht!").build()).queue();
@@ -73,10 +71,14 @@ public class register implements Command {
                             if (rs.next()) {
                                 event.getChannel().sendMessage(new EmbedBuilder().setFooter(Main.Footer, Main.Footer2).setDescription("Anscheinend existierst du schon in unserer Datanbank.").setTitle("Fehler").setColor(Color.RED).build()).queue();
                             } else {
+                                if (args[0].toLowerCase().equals("cookiebot")) {
                                     con = DriverManager.getConnection(urlempty + TempData + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", Main.user, Main.password);
                                     pst = con.prepareStatement("INSERT INTO `user` (`ID`) VALUES ('" + event.getAuthor().getId() + "')");
                                     pst.execute();
-                                    event.getChannel().sendMessage(new EmbedBuilder().setFooter(Main.Footer, Main.Footer2).setDescription("Du wurdest erfolgreich bei dem gewünschten Bot registriert!").setTitle("Nice!!").setThumbnail("").setColor(Color.GREEN).build()).queue();
+                                    event.getChannel().sendMessage(new EmbedBuilder().setFooter(Main.Footer, Main.Footer2).setDescription("Du wurdest erfolgreich bei dem gewünschten Bot registriert!").setTitle("Nice!!").setColor(Color.GREEN).build()).queue();
+                                } else {
+                                    event.getChannel().sendMessage(new EmbedBuilder().setFooter(Main.Footer, Main.Footer2).setColor(Color.RED).setTitle("Fehler").setDescription("Dieser Bot muss noch eingestellt werden...").build()).queue();
+                                }
                             }
                         }
                     }

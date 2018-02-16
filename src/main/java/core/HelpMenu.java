@@ -20,7 +20,7 @@ public class HelpMenu {
             Emoji[1]="\uD83D\uDD19";
             Title = "Help zum GottderBots";
             Message="``-help`` - macht das Help Menü auf\n" +
-                    "``-bank`` - Wandelt eine Bot währung in Bytes um\n" +
+                    "``-bank`` - Wandelt eine Bot währung in Bytes um [Team]\n" +
                     "``-bots`` - Listet alle Bots auf\n" +
                     "``-register`` - Registriert dich bei einem Bot";
         }
@@ -29,8 +29,8 @@ public class HelpMenu {
             Emoji[1]="\uD83D\uDE04";
             Emoji[2]="\uD83D\uDC7E";
             Title="Help - Hilfe";
-            Message="Hier eine Übersicht über alle Bot Commands die von Greg#4239 und " +
-                    "Hax#6775 sind: \nWenn du das entsprechende Menü öffnen willst reagiere mit dem Smiley hinter dem Bot\n" +
+            Message="Hier eine Übersicht über alle Bot Commands die von <@261083609148948488> und <@!362270177712275491> " +
+                    " sind: \nWenn du das entsprechende Menü öffnen willst reagiere mit dem Smiley hinter dem Bot\n" +
                     "``GottderBots`` - :space_invader: \n" +
                     "``CookieBot`` - :smile:";
         }
