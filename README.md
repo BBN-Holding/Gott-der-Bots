@@ -1,2 +1,2 @@
-# GottderBots
-- The Best BOT!!!
+# NEW BOT
+https://github.com/BigBotNetwork/GottBotReloaded/
