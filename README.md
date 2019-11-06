@@ -1,2 +1,2 @@
-# NEW BOT
-https://github.com/BigBotNetwork/GottBotReloaded/
+# Gott der Bots (OUTDATED)
+Not further in programming.

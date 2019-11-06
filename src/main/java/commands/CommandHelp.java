@@ -2,24 +2,14 @@ package commands;
 
 import core.HelpMenu;
 import core.Main;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.PrivateChannel;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import util.SECRETS;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.Timer;
 import java.util.concurrent.TimeUnit;
 
-import static core.Main.urlempty;
-import static util.SECRETS.VERSION;
 
-
-public class help implements Command {
+public class CommandHelp implements Command {
     @Override
     public boolean called(String[] args, MessageReceivedEvent event) {
         return false;
@@ -34,7 +24,7 @@ public class help implements Command {
                 HelpMenu.Help("\uD83D\uDD19");
             long Message= event.getMember().getUser().openPrivateChannel().complete().sendMessage(new EmbedBuilder().setColor(Color.GREEN).setTitle(HelpMenu.Title).setDescription(HelpMenu.Message).build()).complete().getIdLong();
             System.out.println(Message);
-            int i=1;
+            int i = 1;
             while (HelpMenu.Emoji.length>i) {
                 event.getAuthor().openPrivateChannel().complete().addReactionById(Message, HelpMenu.Emoji[i]).queue();
                 HelpMenu.Emoji[i]=null;

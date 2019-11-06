@@ -1,24 +1,17 @@
 package commands;
 
-import com.oracle.tools.packager.IOUtils;
 import core.Main;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
 import org.json.JSONObject;
 
 import java.awt.*;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.charset.Charset;
 import java.sql.*;
 
 import static core.Main.*;
 
-public class miner implements Command {
+public class CommandMiner implements Command {
 
     Member user;
     String useruser;

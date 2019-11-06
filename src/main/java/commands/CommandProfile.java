@@ -1,21 +1,17 @@
 package commands;
 
 import core.Main;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
 
-import javax.sound.sampled.LineEvent;
 import java.awt.*;
 import java.sql.*;
 import java.time.format.DateTimeFormatter;
 
 import static core.Main.urlempty;
-import static util.SECRETS.VERSION;
 
-public class profile implements Command {
+public class CommandProfile implements Command {
     String Nick;
     String Game;
     Member user;
@@ -34,7 +30,7 @@ public class profile implements Command {
                 useruser = args[0].replace("<", "").replace("@", "").replace(">", "").replace("!","");
                 user = event.getGuild().getMemberById(useruser);
             if (useruser.equals(event.getMember().getUser().getId())) {
-                event.getTextChannel().sendMessage("Was bringt es sich selbst zu hinzuschreiben?? egal... mach es nächstes mal einfach mit -profile :wink: ").queue();
+                event.getTextChannel().sendMessage("Was bringt es sich selbst hinzuschreiben?? Egal... mach es nächstes mal einfach mit -profile :wink: ").queue();
             }
 
         }catch ( ArrayIndexOutOfBoundsException e) {
@@ -42,19 +38,19 @@ public class profile implements Command {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (user.getGame() == null) Game = "Es gibt kein Aktuell gespieltes Spiel";
-            else Game  = ""+user.getGame().getName();
+        if (user.getActivities() == null) Game = "Es gibt kein Aktuell gespieltes Spiel";
+            else Game  = "" + user.getActivities().get(0).getName();
         if (user.getNickname() == null) Nick = "Es gibt keinen Nicknamen";
             else Nick = user.getNickname();
-            int i=0;
-            String Rollen="";
+            int i = 0;
+            StringBuilder Rollen = new StringBuilder();
             int end = user.getRoles().size()-1;
             while (i<user.getRoles().size()) {
                 if (i<end) {
-                    Rollen += user.getRoles().get(i).getName() + ", ";
+                    Rollen.append(user.getRoles().get(i).getName()).append(", ");
                     i++;
                 } else {
-                    Rollen += user.getRoles().get(i).getName();
+                    Rollen.append(user.getRoles().get(i).getName());
                     i++;
                 }
             }
@@ -68,7 +64,9 @@ public class profile implements Command {
                 } else {
                     Cookies=rs.getInt(2)+"";
                 }
-            } catch (SQLException e) {}
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
             //Level
         try {
             Connection con = DriverManager.getConnection(urlempty + "lvl" + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", Main.user, Main.password);
@@ -81,14 +79,16 @@ public class profile implements Command {
                 Punkte=rs.getInt(2)+"";
                 Level=rs.getInt(3)+"";
             }
-        } catch (SQLException e) {}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         EmbedBuilder eb = new EmbedBuilder().setFooter(Main.Footer, Main.Footer2).setColor(Color.GREEN).setTitle("Your Profile");
             eb.addField("Name", user.getUser().getName(), true);
             eb.addField("Nickname", Nick, true);
             eb.addField("Game", Game, true);
-            eb.addField("Rollen", Rollen, true);
-            eb.addField("Server betreten", user.getJoinDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm:ss")), true);
+            eb.addField("Rollen", Rollen.toString(), true);
+            eb.addField("Server betreten", user.getTimeJoined().format(DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm:ss")), true);
             eb.addField("Status", user.getOnlineStatus().toString(), true);
 
             eb.setThumbnail(user.getUser().getAvatarUrl());

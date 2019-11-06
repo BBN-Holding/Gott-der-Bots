@@ -1,73 +1,57 @@
 package core;
 
 import commands.*;
-import listener.Mention;
-import listener.Message;
-import listener.commandListener;
-import net.dv8tion.jda.core.*;
-import net.dv8tion.jda.core.entities.Game;
+import listener.MentionListener;
+import listener.MessageListener;
+import listener.CommandListener;
+import net.dv8tion.jda.api.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 import util.SECRETS;
 
 import javax.security.auth.login.LoginException;
-import java.awt.*;
 import java.io.*;
 import java.net.URL;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import static util.SECRETS.VERSION;
 
 public class Main {
 
-    public static int Timer=0;
-    public static String user="CENSORED :P";
-    public static String password="CENSORED :P";
-    public static String urlempty="jdbc:mysql://localhost/";
+    public static String user = "CENSORED :P";
+    public static String password = "CENSORED :P";
+    public static String urlempty = "jdbc:mysql://localhost/";
 
-    public static JDABuilder builder;
+    static JDABuilder builder;
     public static String Footer = "© Gott der Bots v." + VERSION;
     public static String Footer2 = "http://www.baggerstation.de/testseite/bots/Gott.png";
 
     public static void main(String[] Args) {
         builder = new JDABuilder(AccountType.BOT).setToken(SECRETS.Token).setAutoReconnect(true).setStatus(OnlineStatus.ONLINE);
-        builder.addEventListener(new commandListener());
-        builder.addEventListener(new Message());
-        builder.addEventListener(new Mention());
+        builder.addEventListeners(new CommandListener(), new MessageListener(), new MentionListener());
 
-
-
-        commandHandler.commands.put("help", new help());
-        commandHandler.commands.put("bots", new bots());
-        commandHandler.commands.put("register", new register());
-        commandHandler.commands.put("profile", new profile());
-        commandHandler.commands.put("miner", new miner());
+        commandHandler.commands.put("help", new CommandHelp());
+        commandHandler.commands.put("bots", new CommandBots());
+        commandHandler.commands.put("register", new CommandRegister());
+        commandHandler.commands.put("profile", new CommandProfile());
+        commandHandler.commands.put("miner", new CommandMiner());
 
         GameAnimator.start();
 
         try {
-            JDA jda = builder.buildBlocking();
+             builder.build();
         } catch (LoginException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public static JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
-        InputStream is = new URL(url).openStream();
-        try {
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+        try (InputStream is = new URL(url).openStream()) {
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
             String jsonText = readAll(rd);
-            JSONObject json = new JSONObject(jsonText);
-            return json;
-        } finally {
-            is.close();
+            return new JSONObject(jsonText);
         }
     }
-
 
     private static String readAll(Reader rd) throws IOException {
         StringBuilder sb = new StringBuilder();

@@ -1,14 +1,13 @@
 package commands;
 
 import core.Main;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.sql.*;
 import static core.Main.urlempty;
-import static util.SECRETS.VERSION;
 
-public class bots implements Command {
+public class CommandBots implements Command {
     @Override
     public boolean called(String[] args, MessageReceivedEvent event) {
         return false;
@@ -21,13 +20,15 @@ public class bots implements Command {
         PreparedStatement pst = con.prepareStatement("SELECT * FROM `list`");
         ResultSet rs = pst.executeQuery();
 
-        String out = "";
+        StringBuilder out = new StringBuilder();
 
         while (rs.next()) {
-            out += "``"+rs.getString(6) + "`` Invite Link: ``" + rs.getString(5) + "``\n";
+            out.append("``").append(rs.getString(6)).append("`` Invite Link: ``").append(rs.getString(5)).append("``\n");
         }
-            event.getChannel().sendMessage(new EmbedBuilder().setFooter(Main.Footer, Main.Footer2).setTitle("Alle Bots").setDescription("Hier eine übersicht aller Bots: \n" + out).build()).queue();
-        } catch (SQLException e) {}
+            event.getChannel().sendMessage(new EmbedBuilder().setFooter(Main.Footer, Main.Footer2).setTitle("Alle Bots").setDescription("Hier eine Übersicht aller Bots: \n" + out).build()).queue();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

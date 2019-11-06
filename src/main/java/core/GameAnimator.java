@@ -1,7 +1,6 @@
 package core;
 
-import net.dv8tion.jda.core.entities.Game;
-import util.SECRETS;
+import net.dv8tion.jda.api.entities.Activity;
 
 import java.sql.*;
 
@@ -38,7 +37,7 @@ public class GameAnimator {
             t = new Thread(() -> {
                 while (running) {
                     if (System.currentTimeMillis() >= last + 60000) {
-                        Main.builder.setGame(Game.playing(gameAnimations[currentGame] + " | " + PREFIX + "help | " + VERSION));
+                        Main.builder.setActivity(Activity.playing(gameAnimations[currentGame] + " | " + PREFIX + "help | " + VERSION));
                         if (currentGame == gameAnimations.length - 1) {
                             currentGame = 0;
                         } else {

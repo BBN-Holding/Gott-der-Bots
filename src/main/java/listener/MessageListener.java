@@ -2,27 +2,23 @@ package listener;
 
 import core.HelpMenu;
 import core.Main;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.events.Event;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
-import net.dv8tion.jda.core.events.message.priv.react.PrivateMessageReactionAddEvent;
-import net.dv8tion.jda.core.events.message.priv.react.PrivateMessageReactionRemoveEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.events.message.priv.react.PrivateMessageReactionAddEvent;
+import net.dv8tion.jda.api.events.message.priv.react.PrivateMessageReactionRemoveEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.awt.*;
 
-import static util.SECRETS.VERSION;
-
-public class Message extends ListenerAdapter {
+public class MessageListener extends ListenerAdapter {
     public void onPrivateMessageReactionAdd(PrivateMessageReactionAddEvent event) {
-        if (!event.getUser().isBot() && event.getChannel().getMessageById(event.getMessageId()).complete().getEmbeds().get(0).getTitle().contains("Help") && event.getUser().getIdLong() != event.getJDA().getSelfUser().getIdLong()) {
+        if (!event.getUser().isBot() && event.getChannel().getHistory().getMessageById(event.getMessageId()).getEmbeds().get(0).getTitle().equals("Help") && event.getUser().getIdLong() != event.getJDA().getSelfUser().getIdLong()) {
             Thread t = new Thread(() -> {
-                System.out.println(event.getUser().getName()+"("+event.getUser().getId()+") has reacted with "+ event.getReaction().getReactionEmote().getName()+ " on a Helpmessage");
+                System.out.println(event.getUser().getName()+" ("+event.getUser().getId()+") reacted with "+ event.getReaction().getReactionEmote().getName()+ " to an Help Message.");
                 HelpMenu.Help(event.getReactionEmote().getName());
                 int Reaction = 0;
                 int User = 0;
-                net.dv8tion.jda.core.entities.Message Message = event.getChannel().getMessageById(event.getMessageId()).complete();
+                Message Message = event.getChannel().getHistory().getMessageById(event.getMessageId());
                 while (Message.getReactions().size() - 1 >= Reaction) {
                     if (Message.getReactions().get(Reaction).getUsers().complete().get(User).getIdLong() == event.getJDA().getSelfUser().getIdLong()) {
                         Message.getReactions().get(Reaction).removeReaction().queue();
@@ -55,12 +51,12 @@ public class Message extends ListenerAdapter {
 
 
     public void onPrivateMessageReactionRemove(PrivateMessageReactionRemoveEvent event) {
-        if (!event.getUser().isBot() && event.getChannel().getMessageById(event.getMessageId()).complete().getEmbeds().get(0).getTitle().contains("Help") && event.getUser().getIdLong() != event.getJDA().getSelfUser().getIdLong()) {
+        if (!event.getUser().isBot() && event.getChannel().getHistory().getMessageById(event.getMessageId()).getEmbeds().get(0).getTitle().contains("Help") && event.getUser().getIdLong() != event.getJDA().getSelfUser().getIdLong()) {
             Thread t = new Thread(() -> {
                 HelpMenu.Help(event.getReactionEmote().getName());
                 int Reaction = 0;
                 int User = 0;
-                net.dv8tion.jda.core.entities.Message Message = event.getChannel().getMessageById(event.getMessageId()).complete();
+                Message Message = event.getChannel().getHistory().getMessageById(event.getMessageId());
                 while (Message.getReactions().size() - 1 >= Reaction) {
                     if (Message.getReactions().get(Reaction).getUsers().complete().get(User).getIdLong() == event.getJDA().getSelfUser().getIdLong()) {
                         Message.getReactions().get(Reaction).removeReaction().queue();
@@ -90,5 +86,4 @@ public class Message extends ListenerAdapter {
             t.start();
         }
     }
-
 }
